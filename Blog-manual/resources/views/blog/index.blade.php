@@ -8,6 +8,14 @@
         </h1>
     </div>
 </div>
+{{-- messaggio che compare se post é stato aggiunto --}}
+@if (session()->has('message'))
+    <div class="w-4/5 m-auto mt-10 pl-2">
+        <p class="w-1/6 mb-4 text-gray-50 bg-green-500 rounded-2xl py-4">
+            {{ session()->get('message') }}
+        </p>
+    </div>
+@endif
 {{-- Aggiungo if per controllare se utente é loggato e registrato altrimenti non puó aggiungere post --}}
 @if(Auth::check())
 <div class="pt-15 w-4/5 m-auto">
@@ -24,7 +32,7 @@ href="/blog/{{ $post->slug }} --}}
     
     <div class="sm:grid grid-cols-2 gap-20 w-4/5 mx-auto py-15 border-b border-gray-200">
         <div>
-            <img width="700px" src="https://cdn.pixabay.com/photo/2014/05/03/01/03/laptop-336704_960_720.jpg" alt="">
+            <img width="700px" src="{{ asset('images/' . $post->image_path) }}" alt="">
         </div>
 
         <div>
@@ -42,6 +50,27 @@ href="/blog/{{ $post->slug }} --}}
             <a class="uppercase bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl" href="/blog/{{ $post->slug }}">
                 Keep reading
             </a>
+
+            {{-- creo btn che si mostra solo se user é loggato e se id corrisponde a id creatore post --}}
+            @if(isset(Auth::user()->id) && Auth::user()->id == $post->user_id)
+            <span class="float-right">
+                <a href="/blog/{{ $post->slug }}/edit"
+                   class="text-gray-700 italic hover:text-gray-900 pb-1 border-b-2">
+                    Edit
+                </a>
+            </span>
+            <span class="float-right">
+                <form action="/blog/{{ $post->slug }}"
+                    method="POST">
+                    @csrf
+                    @method('delete')
+                    <button class="text-red-500 pr-3">
+                        Delete
+                    </button>
+
+                </form>
+            </span>
+            @endif
         </div>
     </div>
 @endforeach

@@ -4,7 +4,7 @@
 <div class="m-auto w-4/5 text-left">
     <div class=" py-15" >
         <h1 class="text-6xl">
-            Create Posts
+            Update Posts
         </h1>
     </div>
 </div>
@@ -22,23 +22,25 @@
 </div>
 @endif
 
-{{-- form performa azione di tipo post in direzione blog con enctype="multipart/form-data" dico ad app che aggiungo dati etoken csrf importante per sicurezza --}}
+{{-- form performa azione di tipo post in direzione blog/{{ $post->slug }} con enctype="multipart/form-data" dico ad app che aggiungo dati 
+e token csrf importante per sicurezza, aggiungo method put perché é il metodo di cui ho bisogno per editare --}}
 <div class="w-4/5 m-auto pt-20">
-    <form action="/blog"
+    <form action="/blog/{{ $post->slug }}"
     method="POST"
     enctype="multipart/form-data">
     @csrf
-    {{-- input type text con name title(deve corrispondere a colonna che voglio popolare) --}}
+    @method('PUT')
+    {{-- input type text con name title(deve corrispondere a colonna che voglio popolare, value deve corrispondere a colonna da editare --}}
     <input type="text" 
     name="title" 
-    placeholder="Title..." 
+    value="{{ $post->title }}"
     class="bg-transparent block border-b-2 w-full h-20 text-6xl outline-none">
-    {{-- textarea name corrisponde con colonna che voglio popolare --}}
+    {{-- textarea name corrisponde con colonna che voglio popolare, textarea non puó avere value quindi uso --}}
     <textarea name="description" 
     placeholder="Description..." 
-    class="py-20 bg-transparent block border-b-2 w-full h-60 text-xl outline-none"></textarea>
+    class="py-20 bg-transparent block border-b-2 w-full h-60 text-xl outline-none">{{ $post->description }}</textarea>
 
-    <div class="bg-grey-lighter pt-15">
+    {{-- <div class="bg-grey-lighter pt-15">
         <label class="w-44 flex flex-col items-center 
                       px-2 py-3 bg-white-rounded-lg 
                       shadow-lg tracking-wide uppercase 
@@ -46,12 +48,12 @@
                 <span class="mt-2 text-base leading-normal">
                     Select a file
                 </span>
-                {{-- input per caricare img tipo file e name nome colonna dove lo aggiungo --}}
+                input per caricare img tipo file e name nome colonna dove lo aggiungo
                 <input type="file"
                        name="image"
                        class="hidden">
         </label>
-    </div>
+    </div> --}}
     {{-- btn per inviare deve essere type submit --}}
     <button
     type="submit"
